@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abi-Rechner BW</title>
+  <meta name="description" content="Abiturschnitt für die gymnasiale Oberstufe in Baden-Württemberg berechnen: Notenpunkte eintragen, Schnitt sehen, Daten speichern, exportieren und importieren.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <span>Gymnasiale Oberstufe · Baden-Württemberg</span>
+      <span class="topbar__note">Inoffizielles Schülerprojekt</span>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="brand" href="#main" aria-label="Abi-Rechner, zum Inhalt">
+        <span class="brand__mark" aria-hidden="true">Abi</span>
+        <span class="brand__text">
+          <strong>Abi-Rechner</strong>
+          <span>Abiturschnitt nach der Abiturverordnung BW</span>
+        </span>
+      </a>
+      <div class="account" id="account">
+        <!-- filled by app.js -->
+      </div>
+    </div>
+    <nav class="mainnav" aria-label="Hauptnavigation">
+      <div class="container">
+        <ul>
+          <li><a href="#kurse" class="is-active">Kurse</a></li>
+          <li><a href="#pruefungen">Prüfungen</a></li>
+          <li><a href="#ergebnis">Ergebnis</a></li>
+          <li><a href="#daten">Daten</a></li>
+          <li><a href="#info">So wird gerechnet</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <ol class="breadcrumb" aria-label="Brotkrumen-Navigation">
+      <li>Startseite</li>
+      <li>Schule</li>
+      <li>Abitur</li>
+      <li aria-current="page">Abi-Rechner</li>
+    </ol>
+  </div>
+
+  <main id="main" class="container layout">
+    <div class="content">
+      <section class="intro">
+        <h1>Abiturschnitt berechnen</h1>
+        <p class="lead">Tragen Sie Ihre Notenpunkte (0–15) aus den Halbjahren J1 und J2 sowie die Ergebnisse der Abiturprüfungen ein. Der Rechner ermittelt Block I, Block II und Ihre voraussichtliche Durchschnittsnote – auch wenn noch nicht alle Noten feststehen.</p>
+        <div class="notice" id="guestNotice" hidden>
+          <strong>Hinweis:</strong> Sie sind nicht angemeldet. Ihre Eingaben gehen beim Schließen des Tabs verloren.
+          <button type="button" class="link-button" data-action="open-login">Jetzt anmelden oder registrieren</button>
+        </div>
+      </section>
+
+      <section class="panel" id="kurse" aria-labelledby="kurse-title">
+        <div class="panel__head">
+          <h2 id="kurse-title">Kurse der Qualifikationsphase</h2>
+          <div class="segmented" role="radiogroup" aria-label="Einbringung der Kurse">
+            <label><input type="radio" name="mode" value="auto" checked> Automatisch einbringen</label>
+            <label><input type="radio" name="mode" value="manual"> Manuell wählen</label>
+          </div>
+        </div>
+        <p class="panel__hint" id="modeHint"></p>
+
+        <div class="table-wrap">
+          <table class="grades" id="gradesTable">
+            <thead>
+              <tr>
+                <th scope="col" class="col-subject">Fach</th>
+                <th scope="col" class="col-lf"><abbr title="Leistungsfach (zählt doppelt)">LF</abbr></th>
+                <th scope="col">J1.1</th>
+                <th scope="col">J1.2</th>
+                <th scope="col">J2.1</th>
+                <th scope="col">J2.2</th>
+                <th scope="col" class="col-avg">Ø</th>
+                <th scope="col" class="col-actions"><span class="sr-only">Aktionen</span></th>
+              </tr>
+            </thead>
+            <tbody id="gradesBody"></tbody>
+          </table>
+        </div>
+        <datalist id="subjectList">
+          <option value="Deutsch"><option value="Mathematik"><option value="Englisch">
+          <option value="Französisch"><option value="Latein"><option value="Spanisch">
+          <option value="Physik"><option value="Chemie"><option value="Biologie">
+          <option value="Informatik"><option value="Geschichte"><option value="Geographie">
+          <option value="Gemeinschaftskunde"><option value="Wirtschaft"><option value="Religion">
+          <option value="Ethik"><option value="Bildende Kunst"><option value="Musik">
+          <option value="Sport"><option value="Literatur und Theater"><option value="Seminarkurs">
+        </datalist>
+        <div class="panel__actions">
+          <button type="button" class="btn btn--secondary" data-action="add-subject">+ Fach hinzufügen</button>
+          <span class="counter" id="courseCounter"></span>
+        </div>
+      </section>
+
+      <section class="panel" id="pruefungen" aria-labelledby="pruefungen-title">
+        <div class="panel__head">
+          <h2 id="pruefungen-title">Abiturprüfungen (Block II)</h2>
+        </div>
+        <p class="panel__hint">Drei schriftliche Prüfungen in den Leistungsfächern und zwei mündliche Prüfungen bzw. Präsentationsprüfungen. Jedes Ergebnis zählt vierfach. Fehlende Prüfungen werden mit Ihrem Kursschnitt hochgerechnet.</p>
+        <div class="exams" id="exams"></div>
+      </section>
+
+      <section class="panel" id="daten" aria-labelledby="daten-title">
+        <div class="panel__head">
+          <h2 id="daten-title">Daten exportieren und importieren</h2>
+        </div>
+        <p class="panel__hint">Sichern Sie Ihre Noten als Datei oder übertragen Sie sie auf ein anderes Gerät. Importiert werden Dateien, die mit diesem Rechner als JSON exportiert wurden.</p>
+        <div class="data-actions">
+          <button type="button" class="btn btn--primary" data-action="export-json">Als JSON exportieren</button>
+          <button type="button" class="btn btn--secondary" data-action="export-csv">Als CSV (Excel) exportieren</button>
+          <label class="btn btn--secondary file-button">
+            JSON importieren
+            <input type="file" id="importFile" accept=".json,application/json">
+          </label>
+          <button type="button" class="btn btn--ghost" data-action="reset">Alle Eingaben löschen</button>
+        </div>
+      </section>
+
+      <section class="panel info" id="info" aria-labelledby="info-title">
+        <div class="panel__head">
+          <h2 id="info-title">So wird gerechnet</h2>
+        </div>
+        <dl class="facts">
+          <div><dt>Block I</dt><dd>40 Halbjahresleistungen aus J1 und J2. Die Kurse der drei Leistungsfächer zählen doppelt. Formel: Punktsumme ÷ (40 + Anzahl LF-Kurse) × 40, maximal 600 Punkte, mindestens 200 Punkte.</dd></div>
+          <div><dt>Block II</dt><dd>Fünf Prüfungsfächer, jeweils vierfach gewertet, maximal 300 Punkte, mindestens 100 Punkte.</dd></div>
+          <div><dt>Durchschnittsnote</dt><dd>Note = 17/3 − Gesamtpunkte ÷ 180, auf eine Nachkommastelle abgeschnitten. Ab 823 Punkten ergibt sich 1,0, unter 300 Punkten ist das Abitur nicht bestanden.</dd></div>
+          <div><dt>Automatisch einbringen</dt><dd>Alle Kurse der Leistungsfächer und der Prüfungsfächer werden eingebracht, die übrigen Plätze bis 40 mit Ihren besten Kursen gefüllt. Schulspezifische Einbringungspflichten (z. B. Fremdsprache, Naturwissenschaft) prüfen Sie bitte im manuellen Modus.</dd></div>
+        </dl>
+        <p class="small">Alle Angaben ohne Gewähr. Verbindlich ist ausschließlich die Berechnung durch Ihre Schule.</p>
+      </section>
+    </div>
+
+    <aside class="sidebar" id="ergebnis" aria-labelledby="ergebnis-title">
+      <div class="result">
+        <h2 id="ergebnis-title" class="result__title">Ihr Ergebnis</h2>
+        <p class="result__status" id="resultStatus">Hochrechnung</p>
+        <div class="result__grade" aria-live="polite">
+          <span class="result__label">Durchschnittsnote</span>
+          <span class="result__value" id="gradeValue">–</span>
+        </div>
+        <dl class="result__rows">
+          <div>
+            <dt>Gesamtpunkte</dt>
+            <dd><span id="totalValue">–</span> / 900</dd>
+          </div>
+          <div>
+            <dt>Block I <small id="b1Count"></small></dt>
+            <dd><span id="b1Value">–</span> / 600</dd>
+            <div class="bar"><span id="b1Bar"></span></div>
+          </div>
+          <div>
+            <dt>Block II <small id="b2Count"></small></dt>
+            <dd><span id="b2Value">–</span> / 300</dd>
+            <div class="bar"><span id="b2Bar"></span></div>
+          </div>
+          <div>
+            <dt>Ø Notenpunkte (Kurse)</dt>
+            <dd id="avgValue">–</dd>
+          </div>
+        </dl>
+        <ul class="warnings" id="warnings"></ul>
+        <p class="save-state" id="saveState"></p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <strong>Abi-Rechner</strong>
+        <p>Ein inoffizielles Hilfsmittel für Schülerinnen und Schüler der gymnasialen Oberstufe. Kein Angebot des Ministeriums für Kultus, Jugend und Sport Baden-Württemberg.</p>
+      </div>
+      <div>
+        <strong>Datenschutz</strong>
+        <p>Alle Daten bleiben in Ihrem Browser auf diesem Gerät. Es werden keine Daten an einen Server übertragen.</p>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="dialog" id="authDialog" aria-labelledby="authTitle">
+    <form method="dialog" class="dialog__form" id="authForm" novalidate>
+      <div class="dialog__head">
+        <h2 id="authTitle">Anmelden</h2>
+        <button type="button" class="dialog__close" data-action="close-dialog" aria-label="Schließen">×</button>
+      </div>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="tab is-active" data-tab="login" aria-selected="true">Anmelden</button>
+        <button type="button" role="tab" class="tab" data-tab="register" aria-selected="false">Registrieren</button>
+      </div>
+      <label class="field">
+        <span>Benutzername</span>
+        <input type="text" name="username" autocomplete="username" required minlength="3" maxlength="40">
+      </label>
+      <label class="field">
+        <span>Passwort</span>
+        <input type="password" name="password" autocomplete="current-password" required minlength="6">
+      </label>
+      <label class="field field--check">
+        <input type="checkbox" name="remember" checked>
+        <span>Angemeldet bleiben</span>
+      </label>
+      <p class="form-error" id="authError" role="alert"></p>
+      <p class="small" id="authHint">Ihr Konto wird nur in diesem Browser gespeichert. Für ein anderes Gerät nutzen Sie den Export.</p>
+      <div class="dialog__actions">
+        <button type="submit" class="btn btn--primary" id="authSubmit">Anmelden</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/calc.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
