@@ -21,7 +21,8 @@ python3 -m http.server 8000
 # dann http://localhost:8000 öffnen
 ```
 
-Die Seite funktioniert auch auf GitHub Pages. Für die Anmeldung wird eine sichere Umgebung
+Online-Version: https://linoking09.github.io/abi-rechner-interactive/ (wird bei jedem Push auf `main`
+über GitHub Actions veröffentlicht). Für die Anmeldung wird eine sichere Umgebung
 (`https://` oder `localhost`) benötigt, da Passwörter mit der Web Crypto API gehasht werden.
 
 ## Datenspeicherung
